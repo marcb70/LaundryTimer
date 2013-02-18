@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="css/my.css" />
+        <style>
+            /* App custom styles */
+        </style>
+	<link href="jqmobile/jquery.mobile-1.1.1.min.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="jqmobile/jquery.mobile-1.1.1.min.js"></script>
+        <script src="js/my.js">
+        </script>
+       
+        <audio id="alarm" loop>
+        	<source src="alarm.mp3">
+        </audio><!---->
+    </head>
+    <body>
+        <!-- Home -->
+        <div data-role="page" id="page1">
+            <div data-theme="d" data-role="header">
+                <h3>
+                    Laundry Timer
+                </h3>
+                <a data-role="button" data-transition="fade" href="#page1" class="ui-btn-right" id="resetBtn">
+                    Reset
+                </a>
+            </div>
+            <div data-role="content" style="padding: 15px">
+                <div data-role="fieldcontain" align="center">
+                    <select name="selectmenu1" id="selectmenu1" data-theme="c">
+                        <option value="wash">
+                            Wash
+                        </option>
+                        <option value="dry">
+                            Dry
+                        </option>
+                    </select>
+                </div>
+                <div data-role="fieldcontain" align="center">
+                    <fieldset data-role="controlgroup">
+                <input name="" id="textinput1" value="37:00" readonly>
+                    </fieldset>
+                </div>
+                <a data-role="button" data-transition="pop" data-theme="c" href="#page1" id="startBtn">
+                    Start
+                </a>
+            </div>
+        </div>
+        <script>
+		
+		var minTimer = 0,
+			secTimer = 0;
+		var int, aDate, currentTime, endTime, MyAudio;	  
+            $(document).ready(function(e) {
+				MyAudio = new Audio("alarm2.mp3");
+				$("#resetBtn").click(function() {
+                    clearInterval(int);
+					minTimer = 0;
+					secTimer = 0;
+                });
+                
+				$("#startBtn").click(function() {
+					
+					aDate = new Date();
+					
+					currentTime = aDate.getTime();
+					endTime = currentTime + (60 * 1000);
+					console.log("currentTime = " + currentTime);
+					console.log("endTime = " + endTime);
+					console.log("endTime - currentTime = " + (endTime - currentTime));
+                    if($("#selectmenu1").val()=="wash"){
+						console.log("wash");
+						minTimer = 36;
+						secTimer = 59;
+						$("#textinput1").val(minTimer + ":" + secTimer);
+						endTime = currentTime + (60 * 1000 * 1);
+						
+						int =  setInterval(timer,1000);
+						
+					}else{
+						console.log("dry");
+						
+						minTimer = 41;
+						secTimer = 59;
+						$("#textinput1").val(minTimer + ":" + secTimer);
+						endTime = currentTime + (60 * 1000 * 2);
+						int =  setInterval(timer,1000)
+					}
+                });
+				
+            });
+			
+			function timer(){
+				aDate = new Date();
+				currentTime = aDate.getTime();
+				var timeleft = ((endTime - currentTime));
+				console.log("timeleft = " + Math.floor(timeleft/1000));
+				if(timeleft/1000 <= 45 ){
+					playAlarm();
+					console.log("last");
+					clearInterval(int);
+				}
+				if(Math.floor(timeleft/1000) <= 60){
+				$("#textinput1").val(""+ Math.floor(timeleft/1000));
+				}else{
+				$("#textinput1").val(""+ Math.floor(((timeleft/1000)/60)));	
+				}
+				
+			}
+			
+			function playAlarm(){
+				var myAlarm = document.getElementById("alarm");
+				
+				myAlarm.play();
+				
+				console.log("playing");
+				/*
+				//MyAudio = new Audio("alarm2.mp3");
+				MyAudio.play();
+				MyAudio*/
+			}
+			
+			
+        </script>
+    </body>
+</html>
